@@ -58,15 +58,15 @@ namespace SimpleGameOfLife
 
 			InitialiseConsole(_gameOfLife.Width, _gameOfLife.Height);
 
-			Thread inputThread = new Thread(new ParameterizedThreadStart(o => Program.ReadInput()));
+			Thread inputThread = new Thread((Program.ReadInput));
 
 			inputThread.Start();
 
-			Thread gameThread = new Thread(new ParameterizedThreadStart(o => Program.Process()));
+			Thread gameThread = new Thread((Program.Process));
 
 			gameThread.Start();
 
-			Thread renderThread = new Thread(new ParameterizedThreadStart(o => Program.Render()));
+			Thread renderThread = new Thread((Program.Render));
 
 			renderThread.Start();
 
