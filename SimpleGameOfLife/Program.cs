@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using Newtonsoft.Json;
 
@@ -6,9 +8,7 @@ namespace SimpleGameOfLife
 {
 	class Program
 	{
-		private const string TITLE_FORMAT = "Conway's Game of Life - Generation {0}";
-
-		private static int _generation = 0;
+		private const string TITLE_FORMAT = "Conway's Game of Life - Processed Generation {0} - Rendering Generation {1}";
 
 		private static GameOfLife _gameOfLife;
 
@@ -31,6 +31,8 @@ namespace SimpleGameOfLife
 		public static bool Running = true;
 
 		private static bool[,] _currentBoard;
+
+		private static ConcurrentQueue<bool[,]> _renderQueue = new ConcurrentQueue<bool[,]>();
 
 		static void Main(string[] args)
 		{
@@ -76,6 +78,7 @@ namespace SimpleGameOfLife
 		private static void OnRestartCurrentBoard(object sender, EventArgs e)
 		{
 			_gameOfLife.ResetBoardToSeed();
+			_renderGeneration = 0;
 		}
 
 		private static void OnLoopEdgesChange(object sender, EventArgs e)
@@ -87,11 +90,14 @@ namespace SimpleGameOfLife
 		{
 			while (Running)
 			{
-				Console.Title = string.Format(TITLE_FORMAT, _gameOfLife.Generation);
-
-				_currentBoard = _gameOfLife.UpdateBoard();
+				if (_renderQueue.Count < 30)
+				{
+					_renderQueue.Enqueue(_gameOfLife.UpdateBoard());
+				}
 			}
 		}
+
+		private static int _renderGeneration = 0;
 
 		public static void Render()
 		{
@@ -99,7 +105,13 @@ namespace SimpleGameOfLife
 
 			while (Running)
 			{
-				_consoleRenderer.Render(_currentBoard);
+				Console.Title = string.Format(TITLE_FORMAT, _gameOfLife.Generation, _renderGeneration);
+
+				if (_renderQueue.TryDequeue(out bool[,] currentRender))
+				{
+					_consoleRenderer.Render(currentRender);
+					_renderGeneration++;
+				}
 
 				Thread.Sleep(50);
 			}
@@ -108,6 +120,7 @@ namespace SimpleGameOfLife
 		private static void OnNewBoard(object sender, EventArgs e)
 		{
 			_gameOfLife = new GameOfLife(_gameOfLife.Width, _gameOfLife.Height);
+			_renderGeneration = 0;
 		}
 
 		private static void OnQuit(object sender, EventArgs e)
