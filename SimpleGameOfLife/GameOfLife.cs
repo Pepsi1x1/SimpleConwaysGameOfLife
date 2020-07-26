@@ -14,6 +14,8 @@ namespace SimpleGameOfLife
 
 		public bool LoopEdges { get; set; }
 
+		public int Generation { get; private set; }
+
 		/// <summary>
 		/// Sets up a board with a random initial seed
 		/// </summary>
@@ -48,6 +50,8 @@ namespace SimpleGameOfLife
 			this._board = this.InitialiseRandomBoard();
 
 			this.Seed = this._board;
+
+			this.Generation = 0;
 		}
 
 		public GameOfLife(bool[,] seed)
@@ -86,6 +90,8 @@ namespace SimpleGameOfLife
 			}
 
 			this._board = newBoard;
+
+			this.Generation++;
 
 			return newBoard;
 		}
@@ -220,6 +226,7 @@ namespace SimpleGameOfLife
 		internal void ResetBoardToSeed()
 		{
 			this._board = this.Seed;
+			this.Generation = 0;
 		}
 	}
 }
