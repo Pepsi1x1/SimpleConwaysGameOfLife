@@ -348,3 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/SimpleGameOfLife.Xamarin/SimpleGameOfLife.XF.csproj (Debug;AnyCPU {544850D8-44A4-45A6-A30E-34261C18CD1F})..db
+*.DotSettings

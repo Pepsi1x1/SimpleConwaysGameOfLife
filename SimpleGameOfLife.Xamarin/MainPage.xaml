@@ -3,14 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:xf="clr-namespace:SimpleGameOfLife.XF;assembly=SimpleGameOfLife.XF"
              mc:Ignorable="d"
-             x:Class="SimpleGameOfLife.XF.MainPage">
+             x:Class="SimpleGameOfLife.XF.MainPage"
+             x:DataType="xf:MainPageViewModel">
 
-    <StackLayout>
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
         <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <forms:SKCanvasView x:Name="skiaView" PaintSurface="SkiaView_OnPaintSurface" SizeChanged="SkiaView_OnSizeChanged" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ></forms:SKCanvasView>
+
     </StackLayout>
 
 </ContentPage>

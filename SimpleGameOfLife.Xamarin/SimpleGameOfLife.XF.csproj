@@ -11,7 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SimpleGameOfLife.XF.csproj %28Debug%3bAnyCPU {544850D8-44A4-45A6-A30E-34261C18CD1F}%29..db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.80.1" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.1179" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameOfLife.Core\GameOfLife.Core.csproj" />
   </ItemGroup>
 </Project>
