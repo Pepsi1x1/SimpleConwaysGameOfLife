@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SimpleGameOfLife
+namespace GameOfLife.Core
 {
 	public class GameOfLifeSerializer
 	{
@@ -11,12 +11,12 @@ namespace SimpleGameOfLife
 
 			bool[,] seed = Newtonsoft.Json.JsonConvert.DeserializeObject<bool[,]>(json);
 
-			return RotateLeft(seed);
+			return this.RotateLeft(seed);
 		}
 
 		public void SaveSeed(bool[,] seed)
 		{
-			bool[,] seedToSave = RotateRight(seed);
+			bool[,] seedToSave = this.RotateRight(seed);
 
 			string json = Newtonsoft.Json.JsonConvert.SerializeObject(seedToSave);
 

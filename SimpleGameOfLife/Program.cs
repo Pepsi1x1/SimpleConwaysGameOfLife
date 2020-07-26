@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
-using Newtonsoft.Json;
+using GameOfLife.Core;
 
-namespace SimpleGameOfLife
+namespace SimpleGameOfLife.Console
 {
 	class Program
 	{
 		private const string TITLE_FORMAT = "Conway's Game of Life - Processed Generation {0} - Rendering Generation {1}";
 
-		private static GameOfLife _gameOfLife;
+		private static GameOfLife.Core.GameOfLife _gameOfLife;
 
-		private static GameOfLifeSerializer _serializer = new GameOfLifeSerializer();
+		private static readonly GameOfLifeSerializer Serializer = new GameOfLifeSerializer();
 
-		private static ConsoleInputHandler _inputHandler = new ConsoleInputHandler();
+		private static readonly ConsoleInputHandler InputHandler = new ConsoleInputHandler();
 
-		private static IRenderer _consoleRenderer = new ConsoleRenderer();
+		private static readonly IRenderer ConsoleRenderer = new ConsoleRenderer();
 
 		public static EventHandler SaveEventHandler;
 		
@@ -29,24 +28,22 @@ namespace SimpleGameOfLife
 		public static EventHandler RestartCurrentEventHandler;
 
 		public static bool Running = true;
-
-		private static bool[,] _currentBoard;
-
-		private static ConcurrentQueue<bool[,]> _renderQueue = new ConcurrentQueue<bool[,]>();
+		
+		private static readonly ConcurrentQueue<bool[,]> RenderQueue = new ConcurrentQueue<bool[,]>();
 
 		static void Main(string[] args)
 		{
-			int maxHeight = Console.LargestWindowHeight;
+			int maxHeight = System.Console.LargestWindowHeight;
 
-			int maxWidth = Console.LargestWindowWidth;
+			int maxWidth = System.Console.LargestWindowWidth;
 
 			//GameOfLife = new GameOfLife(maxWidth / 2 - 1, maxHeight - 1);
 
 			//GameOfLife = new GameOfLife(60, 20);
 
-			bool[,] seed = _serializer.LoadSeed("GosperGliderGun.seed");
+			bool[,] seed = Serializer.LoadSeed("GosperGliderGun.seed");
 
-			_gameOfLife = new GameOfLife(seed);
+			_gameOfLife = new GameOfLife.Core.GameOfLife(seed);
 
 			SaveEventHandler += OnSaveBoard;
 
@@ -58,9 +55,9 @@ namespace SimpleGameOfLife
 
 			RestartCurrentEventHandler += OnRestartCurrentBoard;
 
-			_consoleRenderer.Initialise(_gameOfLife.Width, _gameOfLife.Height);
+			ConsoleRenderer.Initialise(_gameOfLife.Width, _gameOfLife.Height);
 
-			Thread inputThread = new Thread((_inputHandler.ReadInput));
+			Thread inputThread = new Thread((InputHandler.ReadInput));
 
 			inputThread.Start();
 
@@ -77,7 +74,8 @@ namespace SimpleGameOfLife
 
 		private static void OnRestartCurrentBoard(object sender, EventArgs e)
 		{
-			_gameOfLife.ResetBoardToSeed();
+			_gameOfLife.ResetBoardToSeedState();
+
 			_renderGeneration = 0;
 		}
 
@@ -90,9 +88,9 @@ namespace SimpleGameOfLife
 		{
 			while (Running)
 			{
-				if (_renderQueue.Count < 30)
+				if (RenderQueue.Count < 30)
 				{
-					_renderQueue.Enqueue(_gameOfLife.UpdateBoard());
+					RenderQueue.Enqueue(_gameOfLife.UpdateBoard());
 				}
 			}
 		}
@@ -101,15 +99,15 @@ namespace SimpleGameOfLife
 
 		public static void Render()
 		{
-			_consoleRenderer.Render(_gameOfLife.Seed);
+			ConsoleRenderer.Render(_gameOfLife.Seed);
 
 			while (Running)
 			{
-				Console.Title = string.Format(TITLE_FORMAT, _gameOfLife.Generation, _renderGeneration);
+				System.Console.Title = string.Format(TITLE_FORMAT, _gameOfLife.Generation, _renderGeneration);
 
-				if (_renderQueue.TryDequeue(out bool[,] currentRender))
+				if (RenderQueue.TryDequeue(out bool[,] currentRender))
 				{
-					_consoleRenderer.Render(currentRender);
+					ConsoleRenderer.Render(currentRender);
 					_renderGeneration++;
 				}
 
@@ -119,7 +117,7 @@ namespace SimpleGameOfLife
 
 		private static void OnNewBoard(object sender, EventArgs e)
 		{
-			_gameOfLife = new GameOfLife(_gameOfLife.Width, _gameOfLife.Height);
+			_gameOfLife = new GameOfLife.Core.GameOfLife(_gameOfLife.Width, _gameOfLife.Height);
 			_renderGeneration = 0;
 		}
 
@@ -129,7 +127,7 @@ namespace SimpleGameOfLife
 		}
 		private static void OnSaveBoard(object sender, EventArgs e)
 		{
-			_serializer.SaveSeed(_gameOfLife.Seed);
+			Serializer.SaveSeed(_gameOfLife.Seed);
 		}
 }
 }

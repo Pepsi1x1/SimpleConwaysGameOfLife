@@ -1,4 +1,4 @@
-﻿namespace SimpleGameOfLife
+﻿namespace GameOfLife.Core
 {
 	public interface IRenderer
 	{

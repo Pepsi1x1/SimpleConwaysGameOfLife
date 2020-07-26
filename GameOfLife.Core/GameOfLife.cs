@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleGameOfLife
+namespace GameOfLife.Core
 {
 	public class GameOfLife
 	{
@@ -223,7 +223,7 @@ namespace SimpleGameOfLife
 			return value - (this._board[x, y] ? 1 : 0);
 		}
 
-		internal void ResetBoardToSeed()
+		public void ResetBoardToSeedState()
 		{
 			this._board = this.Seed;
 			this.Generation = 0;

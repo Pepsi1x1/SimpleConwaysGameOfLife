@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleGameOfLife
+namespace SimpleGameOfLife.Console
 {
 	public class ConsoleInputHandler
 	{
@@ -9,7 +9,7 @@ namespace SimpleGameOfLife
 			for (;;)
 			{
 				ConsoleKey key = ConsoleKey.NoName;
-				while (!Console.KeyAvailable || (key = Console.ReadKey(true).Key) != ConsoleKey.Escape)
+				while (!System.Console.KeyAvailable || (key = System.Console.ReadKey(true).Key) != ConsoleKey.Escape)
 				{
 					switch (key)
 					{
